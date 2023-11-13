@@ -83,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
 
                 locationUser = String.valueOf(latitude)  + " & " + String.valueOf(longitude);
 
-//                locationUser = latitude + "" + " & " + longitude + "";
+//                locationUser = latitude + "" + ", " + longitude + "";
                 Log.d(TAG, "User is at: " + locationUser);
                 // Use latitude and longitude as needed
                 updateLocationInfo(latitude, longitude);

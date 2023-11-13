@@ -22,6 +22,9 @@ import androidx.core.content.ContextCompat;
 
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -29,8 +32,8 @@ public class MainActivity extends AppCompatActivity {
     private String locationUser = null;
 
     // Firebase
-    private FirebaseDatabase mFirebaseDatabase;
-    private DatabaseReference mDatabaseReference;
+//    private FirebaseDatabase mFirebaseDatabase;
+//    private DatabaseReference mDatabaseReference;
 
     private static final int PERMISSION_REQUEST_CODE = 1;
     private static final String[] LOCATION_PERMISSIONS = {
@@ -43,8 +46,21 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mFirebaseDatabase = FirebaseDatabase.getInstance();
-        mDatabaseReference = mFirebaseDatabase.getReference("/locations"); // replace with your database reference
+//        mFirebaseDatabase = FirebaseDatabase.getInstance();
+        FirebaseFirestore mFirebaseFirestore = FirebaseFirestore.getInstance();
+
+        CollectionReference collectionRef = mFirebaseFirestore.collection("locations");
+
+        collectionRef.get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
+                        // Thêm trường mới cho mỗi tài liệu
+                        document.getReference().update("locationIsNear", "true");
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    // Xử lý lỗi
+                });
 
         // Check for location permissions
         if (checkLocationPermissions()) {
@@ -132,7 +148,7 @@ public class MainActivity extends AppCompatActivity {
         locationTextView.setText(locationInfo);
 
         // Firebase
-        mDatabaseReference.child("locationUser").setValue(locationInfo);
+//        mDatabaseReference.child("locationUser").setValue(locationInfo);
     }
 
     @Override
@@ -169,12 +185,12 @@ public class MainActivity extends AppCompatActivity {
         if (distance <= radius) {
             locationIsNear = "Yes";
             Toast.makeText(this, "User is near hear", Toast.LENGTH_LONG).show();
-            mDatabaseReference.child("locationIsNear").setValue("Yes");
+//            mDatabaseReference.child("locationIsNear").setValue("Yes");
         }
         else {
             locationIsNear = "No";
             Toast.makeText(this, "User is not near hear", Toast.LENGTH_LONG).show();
-            mDatabaseReference.child("locationIsNear").setValue("No");
+//            mDatabaseReference.child("locationIsNear").setValue("No");
         }
     }
 }
